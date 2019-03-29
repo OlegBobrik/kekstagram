@@ -1,9 +1,8 @@
 'use strict';
 
-var AMOUNT_POSTS = 25;
+var POST_COUNT = 25;
+var usedImages = [];
 
-var posts = [];
-var images = [];
 var comments = ['Всё отлично!', 
                 'В целом всё плохо. Но не всё.', 
                 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 
@@ -18,29 +17,40 @@ var descriptions = ['Тестим новую камеру!',
                     'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все соменья. Не обижайте всех словами......', 
                     'Вот это тачка!'];
 
-for (var i = 0; i < AMOUNT_POSTS; i++) {
-    posts[i] = new Post();
-    console.log(posts[i]);
-}
-
-for (var i = 1; i < AMOUNT_POSTS + 1; i++) {
-    images[i] = i;
-}
-
 function Post() {
     var commentsPost = [];
 
+    // получаем один или два случайных комментария из массива comments
     for (var i = 0; i < getRandomNumber(1, 2); i++) {
-        // получаем один или два случайных комментария из массива comments
         var index = getRandomIndex(comments);
         commentsPost.push(comments[index]);
     }
-    
-    this.url = "photos/{{i}}.jpg";
+
+    var pic = getRandomNumber(1, 25);
+
+    this.url = "photos/" + pic + ".jpg";
     this.likes = getRandomNumber(15, 200);
     this.comment = commentsPost;
     // получаем случайное описание из массива descriptions
     this.description = descriptions[getRandomIndex(descriptions)];
+}
+
+function addPost(count) {
+    var picture = document.querySelector(".pictures");
+    var fragment = document.createDocumentFragment();
+    var template = document.querySelector('#picture-template').content;
+
+    for (var i = 0; i < count; i++) {
+        var post = new Post();
+        var node = template.cloneNode(true);
+
+        node.querySelector('img').setAttribute('src', post.url);
+        node.querySelector('.picture-likes').textContent = post.likes;
+        node.querySelector('.picture-comments').textContent = post.comment;
+
+        fragment.appendChild(node);
+        picture.appendChild(fragment);
+    }
 }
 
 function getRandomIndex(arr) {
@@ -50,3 +60,5 @@ function getRandomIndex(arr) {
 function getRandomNumber(min, max) {
     return Math.floor(min + Math.random() * (max + 1 - min));
 }
+
+addPost(POST_COUNT);
