@@ -1,64 +1,56 @@
 'use strict';
 
-var POST_COUNT = 25;
-var usedImages = [];
+var objects = getArray();
+var bigPicture = document.querySelector('.big-picture');
+var picture = document.querySelector(".pictures");
+var template = document.querySelector('#picture').content;
+var socialComment = bigPicture.querySelectorAll('.social__comment');
+var fragment = document.createDocumentFragment();
 
-var comments = ['Всё отлично!', 
-                'В целом всё плохо. Но не всё.', 
-                'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 
-                'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 
-                'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 
-                'Лица у людей получилась на фотук перекошены, как будто их избивают. Как можно было поймать такой неуданчный момент?!'];
+renderPhotos();
 
-var descriptions = ['Тестим новую камеру!', 
-                    'Затусили с дурзьями на море.', 
-                    'Как же круто тут кормят.', 
-                    'Отдыхаем...', 
-                    'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все соменья. Не обижайте всех словами......', 
-                    'Вот это тачка!'];
+function Photo(image) {
+    this.url = "photos/" + objects[image] + ".jpg";
+    this.likes = getLikes();
+    this.comments = getComments();
+    this.description = getDescription();
+}
 
-function Post() {
-    var commentsPost = [];
+function createFragment(obj) {
+    var node = template.cloneNode(true);
 
-    // получаем один или два случайных комментария из массива comments
-    for (var i = 0; i < getRandomNumber(1, 2); i++) {
-        var index = getRandomIndex(comments);
-        commentsPost.push(comments[index]);
+    node.querySelector('.picture__img').setAttribute('src', obj.url);
+    node.querySelector('.picture__likes').textContent = obj.likes;
+    node.querySelector('.picture__comments').textContent = obj.comments.length;
+
+    fragment.appendChild(node);
+}
+
+function renderPhotos() {
+
+    for (var i = 0; i < objects.length; i++) {
+        objects[i] = new Photo(i);
+
+        createFragment(objects[i]);
     }
 
-    var pic = getRandomNumber(1, 25);
-
-    this.url = "photos/" + pic + ".jpg";
-    this.likes = getRandomNumber(15, 200);
-    this.comment = commentsPost;
-    // получаем случайное описание из массива descriptions
-    this.description = descriptions[getRandomIndex(descriptions)];
+    picture.appendChild(fragment);
 }
 
-function addPost(count) {
-    var picture = document.querySelector(".pictures");
-    var fragment = document.createDocumentFragment();
-    var template = document.querySelector('#picture-template').content;
+bigPicture.classList.remove('hidden');
 
-    for (var i = 0; i < count; i++) {
-        var post = new Post();
-        var node = template.cloneNode(true);
+bigPicture.querySelector('.big-picture__img img').setAttribute('src', objects[0].url);
+bigPicture.querySelector('.likes-count').textContent = objects[0].likes;
+bigPicture.querySelector('.comments-count').textContent = objects[0].comments.length;
 
-        node.querySelector('img').setAttribute('src', post.url);
-        node.querySelector('.picture-likes').textContent = post.likes;
-        node.querySelector('.picture-comments').textContent = post.comment;
+for (let i = 0; i < socialComment.length; i++) {
+    var avatar = getRandomNumber(1, 6);
 
-        fragment.appendChild(node);
-        picture.appendChild(fragment);
-    }
+    socialComment[i].querySelector('.social__picture').setAttribute('src', 'img/avatar-' + avatar + '.svg');
+    socialComment[i].querySelector('.social__text').textContent = objects[i].comments[i];
 }
 
-function getRandomIndex(arr) {
-    return Math.floor(Math.random() * arr.length);
-}
+bigPicture.querySelector('.social__caption').textContent = objects[0].description;
 
-function getRandomNumber(min, max) {
-    return Math.floor(min + Math.random() * (max + 1 - min));
-}
-
-addPost(POST_COUNT);
+bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
+bigPicture.querySelector('.social__comments-loader').classList.add('visually-hidden');
