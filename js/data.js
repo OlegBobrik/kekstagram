@@ -31,7 +31,7 @@ function getComments() {
   // создаем пустой массив для хранения комментариев
   var comments = [];
   // задаем случайную длину массива для хранения комментариев
-  comments.length = getRandomNumber(2, 2);
+  comments.length = getRandomNumber(1, 10);
 
   for (var i = 0; i < comments.length; i++) {
     // переменная для хранения составного комментария
