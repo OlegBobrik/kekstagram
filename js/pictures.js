@@ -11,21 +11,6 @@ var cancelBigPicture = document.querySelector('.big-picture__cancel');
 var nodeComment = bigPicture.querySelector('.social__comment').cloneNode(true);
 
 /**
- * Hello! I'm an anonymous function :)
- * I start to create new Photo-objects and start to add them to DOM Tree
- */
-(function () {
-  for (var i = 0; i < photos.length; i++) {
-    photos[i] = new Photo(i);
-
-    createFragment(photos[i]);
-  }
-
-  containerPictures.appendChild(fragment);
-  removeAllCommentsFromBigPicture();
-})();
-
-/**
  * A Photo-object
  *
  * @param {number} i - A random index from array
@@ -39,7 +24,7 @@ function Photo(i) {
 }
 
 /**
- * Generation one picture and add to DOM Tree
+ * Generating one picture and it add to DOM Tree
  *
  * @param {Object} obj
  */
@@ -78,7 +63,7 @@ function renderBigPicture(obj) {
 }
 
 /**
- * Add all comments from given object to block .big-picture
+ * Add all comments given object to the block .big-picture
  *
  * @param {Object} obj
  */
@@ -87,7 +72,7 @@ function addCommentsToBigPicture(obj) {
 
   for (var i = 0; i < commentsCount; i++) {
     var node = nodeComment.cloneNode(true);
-    var avatar = getRandomNumber(1, 6);
+    var avatar = getAvatar();
 
     node.querySelector('.social__text').textContent = obj.comments[i];
     node.querySelector('.social__picture').setAttribute('src', 'img/avatar-' + avatar + '.svg');
@@ -97,8 +82,8 @@ function addCommentsToBigPicture(obj) {
   bigPicture.querySelector('.social__comments').appendChild(fragment);
 }
 
-// Remove all comments form block .big-picture
-function removeAllCommentsFromBigPicture() {
+// Remove all comments the block .big-picture
+function removeAllCommentsBigPicture() {
   var socialComments = bigPicture.querySelector('.social__comments');
   var length = socialComments.children.length;
 
@@ -124,9 +109,10 @@ function openBigPicture(evt) {
 
 // Close popup
 function closeBigPicture() {
-  removeAllCommentsFromBigPicture();
-  document.querySelector('body').classList.remove('modal-open');
   bigPicture.classList.add('hidden');
+  document.querySelector('body').classList.remove('modal-open');
+
+  removeAllCommentsBigPicture();
 }
 
 // Listeners
@@ -139,3 +125,19 @@ containerPictures.addEventListener('keydown', function (evt) {
     closeBigPicture();
   }
 });
+
+/**
+ * Hello! I'm an anonymous function :)
+ * I start to create new Photo-objects and start to add them to DOM Tree
+ */
+(function () {
+  for (var i = 0; i < photos.length; i++) {
+    photos[i] = new Photo(i);
+
+    createFragment(photos[i]);
+  }
+
+  containerPictures.appendChild(fragment);
+
+  removeAllCommentsBigPicture();
+})();

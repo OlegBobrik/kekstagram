@@ -25,6 +25,10 @@ function getLikes() {
   return getRandomNumber(15, 200);
 }
 
+function getAvatar() {
+  return getRandomNumber(1, 6);
+}
+
 function getComments() {
   // получаем случайное число строк (предложений) для одного комментария
   var countSentence = getRandomNumber(1, 2);
