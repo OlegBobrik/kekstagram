@@ -24,7 +24,7 @@ function Photo(i) {
 }
 
 /**
- * Generating one picture and it add to DOM Tree
+ * Generating and adding to the DOM one picture
  *
  * @param {Object} obj
  */
@@ -128,7 +128,7 @@ containerPictures.addEventListener('keydown', function (evt) {
 
 /**
  * Hello! I'm an anonymous function :)
- * I start to create new Photo-objects and start to add them to DOM Tree
+ * I start to create new Photo-objects and start to add them to the DOM
  */
 (function () {
   for (var i = 0; i < photos.length; i++) {
