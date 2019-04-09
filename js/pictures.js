@@ -63,7 +63,7 @@ function renderBigPicture(obj) {
 }
 
 /**
- * Add all comments given object to the block .big-picture
+ * Adding all comments given object to the block .big-picture
  *
  * @param {Object} obj
  */
@@ -89,6 +89,7 @@ function removeAllCommentsBigPicture() {
 
   for (var i = 0; i < length; i++) {
     var li = socialComments.querySelector('li');
+    
     socialComments.removeChild(li);
   }
 }
