@@ -21,16 +21,20 @@ var marvinEffect = effectsList.querySelector('#effect-marvin');
 var phobosEffect = effectsList.querySelector('#effect-phobos');
 var heatEffect = effectsList.querySelector('#effect-heat');
 
-// Get width the slider block
-var widthEffectLevelLine = effectLevelLine.offsetWidth;
-
-function getActualPositionPin() {
+/**
+ * Get a new value of filter
+ * 
+ * @param {Number} maxValueFilter
+ */
+function getProportion(maxValueFilter) {
+  // Get width the slider block
+  var widthEffectLevelLine = effectLevelLine.offsetWidth;
   // Get an actual position pin on slider
   var cssPropertyEffectLevelPin = getCssProperty(effectLevelPin, 'left');
   // Remove 'px'
   var positionEffectLevelPin = parseInt(cssPropertyEffectLevelPin, 10);
 
-  return positionEffectLevelPin;
+  return maxValueFilter * positionEffectLevelPin / widthEffectLevelLine;
 }
 
 function applyEffect() {
@@ -40,13 +44,13 @@ function applyEffect() {
   if (noneEffect.checked) {
     img.style.filter = 'none';
     effectLevel.classList.add('hidden');
+
   } else if (!noneEffect.checked) {
     effectLevel.classList.remove('hidden');
   }
 
   if (chromeEffect.checked) {
-    var position = getActualPositionPin();
-    var proportion = (1 * position ) / widthEffectLevelLine;
+    var proportion = getProportion(1);
 
     img.classList.add('effects__preview--chrome');
     img.style.filter = 'grayscale( +' + proportion + ')';
@@ -56,8 +60,7 @@ function applyEffect() {
   } 
   
   if (sepiaEffect.checked) {
-    var position = getActualPositionPin();
-    var proportion = (1 * position ) / widthEffectLevelLine;
+    var proportion = getProportion(1);
 
     img.classList.add('effects__preview--sepia');
     img.style.filter = 'sepia( +' + proportion + ')';
@@ -67,8 +70,7 @@ function applyEffect() {
   }
 
   if (marvinEffect.checked) {
-    var position = getActualPositionPin();
-    var proportion = (100 * position ) / widthEffectLevelLine;
+    var proportion = getProportion(100);
 
     img.classList.add('effects__preview--marvin');
     img.style.filter = 'invert( +' + proportion + '%' + ')';
@@ -78,8 +80,7 @@ function applyEffect() {
   }
 
   if (phobosEffect.checked) {
-    var position = getActualPositionPin();
-    var proportion = (3 * position ) / widthEffectLevelLine;
+    var proportion = getProportion(3);
 
     img.classList.add('effects__preview--phobos');
     img.style.filter = 'blur( +' + proportion + 'px' + ')';
@@ -89,8 +90,7 @@ function applyEffect() {
   }
 
   if (heatEffect.checked) {
-    var position = getActualPositionPin();
-    var proportion = (3 * position ) / widthEffectLevelLine;
+    var proportion = getProportion(3);
 
     img.classList.add('effects__preview--heat');
     img.style.filter = 'brightness(' + proportion + ')';
@@ -100,10 +100,8 @@ function applyEffect() {
   }
 };
 
-applyEffect();
+function documentEscPressHandler(evt) {
 
-// ESC keydown
-function onImgOverlayEscPress(evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeImgOverlay();
   }
@@ -112,14 +110,16 @@ function onImgOverlayEscPress(evt) {
 // Open overlay
 function openImgOverlay () {
   imgOverlay.classList.remove('hidden');
-  document.addEventListener('keydown', onImgOverlayEscPress);
+  document.addEventListener('keydown', documentEscPressHandler);
+
+  applyEffect();
 }
 
 // Close overlay
 function closeImgOverlay () {
   imgOverlay.classList.add('hidden');
   uploadFile.value = '';
-  document.removeEventListener('keydown', onImgOverlayEscPress);
+  document.removeEventListener('keydown', documentEscPressHandler);
 }
 
 // Listeners
