@@ -18,7 +18,7 @@ function randomSort() {
   return Math.random() > 0.5 ? 1 : -1;
 }
 
-function getCssProperty(element, property){
+function getCssProperty(element, property) {
   return window.getComputedStyle(element, null).getPropertyValue(property);
 }
 
