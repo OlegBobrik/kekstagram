@@ -21,3 +21,9 @@ function randomSort() {
 function getCssProperty(element, property){
   return window.getComputedStyle(element, null).getPropertyValue(property);
 }
+
+function getCoords(elem) {
+  var block = elem.getBoundingClientRect();
+
+  return block.left + pageXOffset;
+}
