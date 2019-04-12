@@ -2,6 +2,10 @@
 
 (function () {
 
+  var MIN_SCALE = 25;
+  var MAX_SCALE = 100;
+  var STEP_SCALE = 25;
+
   var imgUpload = document.querySelector('.img-upload');
   var uploadFile = imgUpload.querySelector('.img-upload__start #upload-file');
   var imgOverlay = imgUpload.querySelector('.img-upload__overlay');
@@ -13,6 +17,11 @@
   var effectLevelPin = effectLevel.querySelector('.effect-level__pin');
   var imgPreview = imgOverlay.querySelector('.img-upload__preview');
   var img = imgPreview.querySelector('img');
+
+  var scale = imgUpload.querySelector('.img-upload__scale');
+  var scaleValue = scale.querySelector('.scale__control--value');
+  var buttonScaleSmaller = scale.querySelector('.scale__control--smaller');
+  var buttonScaleBigger = scale.querySelector('.scale__control--bigger');
 
   var effectsList = imgOverlay.querySelector('.effects__list');
   var effectRadioInputs = effectsList.querySelectorAll('input[type="radio"]');
@@ -30,20 +39,15 @@
    * Get a new value of filter
    *
    * @param {Number} maxValueFilter
-   * @return {Number}
+   * @return {Number} Value of filter
    */
   function getProportion(maxValueFilter) {
-    // Get an actual position pin on slider
-    var cssPropertyEffectLevelPin = window.utils.getCssProperty(effectLevelPin, 'left');
-    // Remove 'px'
-    var positionEffectLevelPin = parseInt(cssPropertyEffectLevelPin, 10);
+    var positionPin = parseInt(effectLevelPin.style.left, 10);
 
-    return maxValueFilter * positionEffectLevelPin / widthEffectLevelLine;
+    return maxValueFilter * positionPin / 100;
   }
 
   function applyEffect() {
-    // Reset position left to 100%
-    // effectLevelPin.style.left = '100%';
 
     if (noneEffect.checked) {
       img.style.filter = 'none';
@@ -104,11 +108,20 @@
   // Open overlay
   function openImgOverlay() {
     imgOverlay.classList.remove('hidden');
-    document.addEventListener('keydown', documentEscPressHandler);
     coordsLevelLine = window.utils.getCoords(effectLevelLine);
     widthEffectLevelLine = effectLevelLine.offsetWidth;
+    effectLevelLine.style.cursor = 'pointer';
 
-    applyEffect();
+    document.addEventListener('keydown', documentEscPressHandler);
+
+    effectRadioInputs.forEach(function (item) {
+      item.addEventListener('click', function () {
+        setValueEffect(100);
+      });
+    });
+
+    setScalePicture(100);
+    setValueEffect(100);
   }
 
   // Close overlay
@@ -116,6 +129,19 @@
     imgOverlay.classList.add('hidden');
     uploadFile.value = '';
     document.removeEventListener('keydown', documentEscPressHandler);
+
+    effectRadioInputs.forEach(function (item) {
+      item.removeEventListener('click', applyEffect);
+    });
+
+  }
+
+  function setValueEffect(value) {
+    effectLevelPin.style.left = value + '%';
+    effectLevelDepth.style.width = value + '%';
+    effectLevelValue.setAttribute('value', value);
+
+    applyEffect();
   }
 
   // Drag'n'drop pin
@@ -123,19 +149,17 @@
 
     function movePin(evt) {
       var position = evt.pageX - coordsLevelLine;
-      var percent = Math.floor(position / (widthEffectLevelLine / 100));
+      var value = Math.floor(position / (widthEffectLevelLine / 100));
 
       if (position < 0) {
-        effectLevelPin.style.left = 0 + '%';
+        setValueEffect(0);
 
       } else if (position > widthEffectLevelLine) {
-        effectLevelPin.style.left = 100 + '%';
+        setValueEffect(100);
 
       } else {
-        effectLevelPin.style.left = percent + '%';
+        setValueEffect(value);
       }
-
-      setValueEffect();
     }
 
     function mouseMoveHandler(evt) {
@@ -153,19 +177,40 @@
     });
   }
 
-  function setValueEffect() {
-    effectLevelDepth.style.width = effectLevelPin.style.left;
-    effectLevelValue.setAttribute('value', parseInt(effectLevelPin.style.left, 10));
-
-    applyEffect();
+  function setScalePicture(value) {
+    imgPreview.style.transform = 'scale(' + value / 100 + ')';
+    scaleValue.setAttribute('value', value);
   }
 
-  function effectLevelLineHandler(evt) {
+  function effectLevelLineClickHandler(evt) {
     var position = evt.pageX - coordsLevelLine;
+    var value = Math.floor(position / (widthEffectLevelLine / 100));
 
-    effectLevelPin.style.left = Math.floor(position / (widthEffectLevelLine / 100)) + '%';
+    setValueEffect(value);
+  }
 
-    setValueEffect();
+  // Downscale picture
+  function buttonScaleSmallerClickHandler() {
+    var value = parseInt(scaleValue.value, 10);
+
+    if (value !== MIN_SCALE) {
+      value -= STEP_SCALE;
+      scaleValue.value = value + '%';
+    }
+
+    setScalePicture(value);
+  }
+
+  // Upscale picture
+  function buttonScaleBiggerClickHandler() {
+    var value = parseInt(scaleValue.value, 10);
+
+    if (value !== MAX_SCALE) {
+      value += STEP_SCALE;
+      scaleValue.value = value + '%';
+    }
+
+    setScalePicture(value);
   }
 
   // Listeners
@@ -181,10 +226,10 @@
 
   effectLevelPin.addEventListener('mousedown', effectLevelPinMouseDownHandler);
 
-  effectLevelLine.addEventListener('click', effectLevelLineHandler);
+  effectLevelLine.addEventListener('click', effectLevelLineClickHandler);
 
-  for (var i = 0; i < effectRadioInputs.length; i++) {
-    effectRadioInputs[i].addEventListener('click', applyEffect);
-  }
+  buttonScaleSmaller.addEventListener('click', buttonScaleSmallerClickHandler);
+
+  buttonScaleBigger.addEventListener('click', buttonScaleBiggerClickHandler);
 
 })();

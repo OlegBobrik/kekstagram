@@ -24,9 +24,9 @@
       return Math.random() > 0.5 ? 1 : -1;
     },
 
-    getCssProperty: function (element, property) {
-      return window.getComputedStyle(element, null).getPropertyValue(property);
-    },
+    // getCssProperty: function (element, property) {
+    //   return window.getComputedStyle(element, null).getPropertyValue(property);
+    // },
 
     getCoords: function (elem) {
       var block = elem.getBoundingClientRect();
