@@ -5,7 +5,7 @@ var SHOW_MAX_COMMENTS = 5;
 var currentObj; // Current object
 var counter = 0; // Counter of comments
 
-var photos = getArray();
+var photos = window.data.getArray();
 var fragment = document.createDocumentFragment();
 var template = document.querySelector('#picture').content;
 var containerPictures = document.querySelector('.pictures');
@@ -21,9 +21,9 @@ var nodeComment = bigPicture.querySelector('.social__comment').cloneNode(true);
  */
 function Photo(index) {
   this.url = 'photos/' + photos[index] + '.jpg';
-  this.likes = getLikes();
-  this.comments = getComments();
-  this.description = getDescription();
+  this.likes = window.data.getLikes();
+  this.comments = window.data.getComments();
+  this.description = window.data.getDescription();
   this.id = index;
 }
 
@@ -99,7 +99,7 @@ function addCommentsToBigPicture() {
 // Adding one comment to fragment
 function addOneCommentToFragment(obj, index) {
   var node = nodeComment.cloneNode(true);
-  var avatar = getAvatar();
+  var avatar = window.data.getAvatar();
 
   node.querySelector('.social__text').textContent = obj.comments[index];
   node.querySelector('.social__picture').setAttribute('src', 'img/avatar-' + avatar + '.svg');
