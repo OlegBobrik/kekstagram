@@ -151,6 +151,8 @@
       var position = evt.pageX - coordsLevelLine;
       var value = Math.floor(position / (widthEffectLevelLine / 100));
 
+      evt.preventDefault();
+
       if (position < 0) {
         setValueEffect(0);
 
