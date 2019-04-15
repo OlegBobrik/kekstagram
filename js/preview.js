@@ -1,10 +1,9 @@
 'use strict';
 
 (function () {
-
   var SHOW_MAX_COMMENTS = 5;
 
-  var currentObj; // Current object
+  var currentData; // Current object
   var counter = 0; // Counter of comments
 
   var fragment = document.createDocumentFragment();
@@ -16,51 +15,48 @@
   /**
    * A popup's selected picture
    *
-   * @param {Object} obj
+   * @param {Object} data
    */
-  function renderBigPicture(obj) {
-    var src = obj.parentNode.querySelector('.picture__img').getAttribute('src');
-    var commentsCount = obj.parentNode.querySelector('.picture__comments').textContent;
-    var like = obj.parentNode.querySelector('.picture__likes').textContent;
-    var id = obj.parentNode.getAttribute('id');
+  function renderBigPicture(data) {
+    var id = data.getAttribute('id');
 
-    currentObj = window.pictures.photosArray()[id];
+    currentData = window.pictures.photosArray()[id];
 
     bigPicture.classList.remove('hidden');
-    bigPicture.querySelector('.big-picture__img img').setAttribute('src', src);
-    bigPicture.querySelector('.likes-count').textContent = like;
-    bigPicture.querySelector('.social__comment-count .comments-count').textContent = commentsCount;
-    bigPicture.querySelector('.social__caption').textContent = currentObj.description;
+    bigPicture.querySelector('.big-picture__img img').setAttribute('src', currentData.url);
+    bigPicture.querySelector('.likes-count').textContent = currentData.likes;
+    bigPicture.querySelector('.social__comment-count .comments-count').textContent = currentData.comments.length;
+    bigPicture.querySelector('.social__caption').textContent = currentData.description;
 
     document.querySelector('body').classList.add('modal-open');
-
     document.addEventListener('keydown', bigPictureEscPressHandler);
+    bigPicture.addEventListener('click', bigPictureClickHandler);
 
     removeAllCommentsBigPicture();
     addCommentsToBigPicture();
   }
 
-  // Adding 5 or less comments to the block .big-picture
+  // Adding { SHOW_MAX_COMMENTS } or less comments to the block .big-picture
   function addCommentsToBigPicture() {
-    var commentsCount = currentObj.comments.length;
+    var commentsCount = currentData.comments.length;
     var t = counter;
 
     if (commentsCount - t > SHOW_MAX_COMMENTS) {
 
       for (var i = t; i < SHOW_MAX_COMMENTS + t; i++) {
-        addOneCommentToFragment(currentObj, i);
+        addOneCommentToFragment(currentData, i);
       }
     } else {
 
       for (var j = counter; j < commentsCount; j++) {
-        addOneCommentToFragment(currentObj, j);
+        addOneCommentToFragment(currentData, j);
       }
     }
 
     bigPicture.querySelector('.social__comments').appendChild(fragment);
     bigPicture.querySelector('.social__comment-count').childNodes[0].textContent = counter + ' из ';
 
-    if (counter === currentObj.comments.length) {
+    if (counter === currentData.comments.length) {
       buttonCommentsLoader.classList.add('hidden');
       counter = 0;
 
@@ -72,10 +68,11 @@
   // Adding one comment to fragment
   function addOneCommentToFragment(obj, index) {
     var node = nodeComment.cloneNode(true);
-    var avatar = window.data.getAvatar();
+    var avatar = obj.comments[index].avatar;
+    var comment = obj.comments[index].message;
 
-    node.querySelector('.social__text').textContent = obj.comments[index];
-    node.querySelector('.social__picture').setAttribute('src', 'img/avatar-' + avatar + '.svg');
+    node.querySelector('.social__text').textContent = comment;
+    node.querySelector('.social__picture').setAttribute('src', avatar);
 
     counter++;
 
@@ -100,6 +97,7 @@
 
     document.querySelector('body').classList.remove('modal-open');
     document.removeEventListener('keydown', bigPictureEscPressHandler);
+    bigPicture.removeEventListener('click', closeBigPicture);
 
     counter = 0;
 
@@ -109,6 +107,12 @@
   function bigPictureEscPressHandler(evt) {
 
     if (window.utils.isEscKeycode(evt)) {
+      closeBigPicture();
+    }
+  }
+
+  function bigPictureClickHandler(evt) {
+    if (evt.target === bigPicture) {
       closeBigPicture();
     }
   }
@@ -129,5 +133,4 @@
       renderBigPicture(obj);
     }
   };
-
 })();

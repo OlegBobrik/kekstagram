@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   var containerPictures = document.querySelector('.pictures');
 
   function openPreview(evt) {
@@ -11,7 +10,7 @@
     while (target !== containerPictures) {
 
       if (target.className === pictureImg.classList.value) {
-        window.preview.openPreview(target);
+        window.preview.openPreview(target.parentNode);
       }
 
       target = target.parentNode;

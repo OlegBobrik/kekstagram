@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   var commentsUsers = [
     'Всё отлично!',
     'В целом всё плохо. Но не всё.',
@@ -67,7 +66,5 @@
     getComments: function () {
       return generateComments();
     }
-
   };
-
 })();

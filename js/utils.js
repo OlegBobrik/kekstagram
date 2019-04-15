@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   var ESC_KEYCODE = 27;
 
   window.utils = {
@@ -37,7 +36,5 @@
     isEscKeycode: function (evt) {
       return evt.keyCode === ESC_KEYCODE;
     }
-
   };
-
 })();

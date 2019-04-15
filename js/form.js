@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   var MIN_SCALE = 25;
   var MAX_SCALE = 100;
   var STEP_SCALE = 25;
@@ -43,8 +42,11 @@
    */
   function getProportion(maxValueFilter) {
     var positionPin = parseInt(effectLevelPin.style.left, 10);
+    var value = maxValueFilter * positionPin / 100;
 
-    return maxValueFilter * positionPin / 100;
+    return function () {
+      return value;
+    };
   }
 
   function applyEffect() {
@@ -59,7 +61,7 @@
 
     if (chromeEffect.checked) {
       img.classList.add('effects__preview--chrome');
-      img.style.filter = 'grayscale( +' + getProportion(1) + ')';
+      img.style.filter = 'grayscale( +' + getProportion(1)() + ')';
 
     } else if (!chromeEffect.checked) {
       img.classList.remove('effects__preview--chrome');
@@ -67,7 +69,7 @@
 
     if (sepiaEffect.checked) {
       img.classList.add('effects__preview--sepia');
-      img.style.filter = 'sepia( +' + getProportion(1) + ')';
+      img.style.filter = 'sepia( +' + getProportion(1)() + ')';
 
     } else if (!sepiaEffect.checked) {
       img.classList.remove('effects__preview--sepia');
@@ -75,7 +77,7 @@
 
     if (marvinEffect.checked) {
       img.classList.add('effects__preview--marvin');
-      img.style.filter = 'invert( +' + getProportion(100) + '%' + ')';
+      img.style.filter = 'invert( +' + getProportion(100)() + '%' + ')';
 
     } else if (!marvinEffect.checked) {
       img.classList.remove('effects__preview--marvin');
@@ -83,7 +85,7 @@
 
     if (phobosEffect.checked) {
       img.classList.add('effects__preview--phobos');
-      img.style.filter = 'blur( +' + getProportion(3) + 'px' + ')';
+      img.style.filter = 'blur( +' + getProportion(3)() + 'px' + ')';
 
     } else if (!phobosEffect.checked) {
       img.classList.remove('effects__preview--phobos');
@@ -91,7 +93,7 @@
 
     if (heatEffect.checked) {
       img.classList.add('effects__preview--heat');
-      img.style.filter = 'brightness(' + getProportion(3) + ')';
+      img.style.filter = 'brightness(' + getProportion(3)() + ')';
 
     } else if (!heatEffect.checked) {
       img.classList.remove('effects__preview--heat');
@@ -148,15 +150,15 @@
   function effectLevelPinMouseDownHandler() {
 
     function movePin(evt) {
-      var position = evt.pageX - coordsLevelLine;
-      var value = Math.floor(position / (widthEffectLevelLine / 100));
+      var x = evt.pageX - coordsLevelLine;
+      var value = Math.floor(x / (widthEffectLevelLine / 100));
 
       evt.preventDefault();
 
-      if (position < 0) {
+      if (x < 0) {
         setValueEffect(0);
 
-      } else if (position > widthEffectLevelLine) {
+      } else if (x > widthEffectLevelLine) {
         setValueEffect(100);
 
       } else {
@@ -233,5 +235,4 @@
   buttonScaleSmaller.addEventListener('click', buttonScaleSmallerClickHandler);
 
   buttonScaleBigger.addEventListener('click', buttonScaleBiggerClickHandler);
-
 })();
