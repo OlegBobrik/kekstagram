@@ -8,12 +8,33 @@
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
-        onLoad(xhr.response);
-      } else {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+      switch (xhr.status) {
+        case 200:
+          onLoad(xhr.response);
+          break;
+        case 206:
+          onError('Статус ответа: ' + xhr.status + ' - Partial Content');
+          break;
+        case 301:
+          onError('Статус ответа: ' + xhr.status + ' - Moved Permanently');
+          break;
+        case 302:
+          onError('Статус ответа: ' + xhr.status + ' - Moved Temporarily');
+          break;
+        case 403:
+          onError('Статус ответа: ' + xhr.status + ' - Forbidden');
+          break;
+        case 404:
+          onError('Статус ответа: ' + xhr.status + ' - Not Found');
+          break;
+        case 500:
+          onError('Статус ответа: ' + xhr.status + ' - Internal Server Error');
+          break;
+        default:
+          onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
+
 
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения');

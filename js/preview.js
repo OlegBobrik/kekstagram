@@ -11,6 +11,7 @@
   var buttonCommentsLoader = bigPicture.querySelector('.social__comments-loader');
   var nodeComment = bigPicture.querySelector('.social__comment').cloneNode(true);
   var cancelBigPicture = bigPicture.querySelector('.big-picture__cancel');
+  var inputSocialFooter = bigPicture.querySelector('.social__footer-text');
 
   /**
    * A popup's selected picture
@@ -104,13 +105,17 @@
     removeAllCommentsBigPicture();
   }
 
+  // ESC keydown
   function bigPictureEscPressHandler(evt) {
-
     if (window.utils.isEscKeycode(evt)) {
-      closeBigPicture();
+
+      if (document.activeElement !== inputSocialFooter) {
+        closeBigPicture();
+      }
     }
   }
 
+  // Click
   function bigPictureClickHandler(evt) {
     if (evt.target === bigPicture) {
       closeBigPicture();
@@ -129,8 +134,8 @@
 
   // Window
   window.preview = {
-    openPreview: function (obj) {
-      renderBigPicture(obj);
+    render: function (data) {
+      renderBigPicture(data);
     }
   };
 })();

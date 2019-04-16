@@ -10,7 +10,7 @@
     while (target !== containerPictures) {
 
       if (target.className === pictureImg.classList.value) {
-        window.preview.openPreview(target.parentNode);
+        window.preview.render(target.parentNode);
       }
 
       target = target.parentNode;
@@ -18,6 +18,10 @@
   }
 
   // Listeners
-  containerPictures.addEventListener('click', openPreview);
+  function AddListener() {
+    containerPictures.addEventListener('click', openPreview);
+  }
+
+  window.pictures(AddListener);
 
 })();
