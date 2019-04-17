@@ -12,13 +12,14 @@
   var nodeComment = bigPicture.querySelector('.social__comment').cloneNode(true);
   var cancelBigPicture = bigPicture.querySelector('.big-picture__cancel');
   var inputSocialFooter = bigPicture.querySelector('.social__footer-text');
+  var form = document.querySelector('.img-upload__form');
 
   /**
    * A popup's selected picture
    *
    * @param {Object} data
    */
-  function renderBigPicture(data) {
+  function renderPreview(data) {
     var id = data.getAttribute('id');
 
     currentData = window.pictures.photosArray()[id];
@@ -33,24 +34,24 @@
     document.addEventListener('keydown', bigPictureEscPressHandler);
     bigPicture.addEventListener('click', bigPictureClickHandler);
 
-    removeAllCommentsBigPicture();
-    addCommentsToBigPicture();
+    removeAllCommentsPreview();
+    addCommentsToPreview();
   }
 
-  // Adding { SHOW_MAX_COMMENTS } or less comments to the block .big-picture
-  function addCommentsToBigPicture() {
+  // Adding { SHOW_MAX_COMMENTS } or less comments to the preview popup
+  function addCommentsToPreview() {
     var commentsCount = currentData.comments.length;
     var t = counter;
 
     if (commentsCount - t > SHOW_MAX_COMMENTS) {
 
       for (var i = t; i < SHOW_MAX_COMMENTS + t; i++) {
-        addOneCommentToFragment(currentData, i);
+        addCommentToFragment(currentData, i);
       }
     } else {
 
       for (var j = counter; j < commentsCount; j++) {
-        addOneCommentToFragment(currentData, j);
+        addCommentToFragment(currentData, j);
       }
     }
 
@@ -67,7 +68,7 @@
   }
 
   // Adding one comment to fragment
-  function addOneCommentToFragment(obj, index) {
+  function addCommentToFragment(obj, index) {
     var node = nodeComment.cloneNode(true);
     var avatar = obj.comments[index].avatar;
     var comment = obj.comments[index].message;
@@ -80,8 +81,8 @@
     fragment.appendChild(node);
   }
 
-  // Remove all comments the block .big-picture
-  function removeAllCommentsBigPicture() {
+  //  Remove all comments in the popup's preview
+  function removeAllCommentsPreview() {
     var socialComments = bigPicture.querySelector('.social__comments');
     var length = socialComments.children.length;
 
@@ -93,16 +94,16 @@
   }
 
   // Close popup
-  function closeBigPicture() {
+  function closePreviewPopup() {
     bigPicture.classList.add('hidden');
 
     document.querySelector('body').classList.remove('modal-open');
     document.removeEventListener('keydown', bigPictureEscPressHandler);
-    bigPicture.removeEventListener('click', closeBigPicture);
+    bigPicture.removeEventListener('click', closePreviewPopup);
 
     counter = 0;
 
-    removeAllCommentsBigPicture();
+    removeAllCommentsPreview();
   }
 
   // ESC keydown
@@ -110,7 +111,7 @@
     if (window.utils.isEscKeycode(evt)) {
 
       if (document.activeElement !== inputSocialFooter) {
-        closeBigPicture();
+        closePreviewPopup();
       }
     }
   }
@@ -118,24 +119,31 @@
   // Click
   function bigPictureClickHandler(evt) {
     if (evt.target === bigPicture) {
-      closeBigPicture();
+      closePreviewPopup();
     }
   }
 
   // Show more comments
   function buttonCommentsLoaderHandler() {
-    addCommentsToBigPicture();
+    addCommentsToPreview();
   }
 
   // Listeners
-  cancelBigPicture.addEventListener('click', closeBigPicture);
+  cancelBigPicture.addEventListener('click', closePreviewPopup);
 
   buttonCommentsLoader.addEventListener('click', buttonCommentsLoaderHandler);
+
+  form.addEventListener('submit', function (evt) {
+    if (!window.hashtags.validate()) {
+      evt.preventDefault();
+    }
+  });
+
 
   // Window
   window.preview = {
     render: function (data) {
-      renderBigPicture(data);
+      renderPreview(data);
     }
   };
 })();

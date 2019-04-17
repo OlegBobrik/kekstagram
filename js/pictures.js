@@ -35,7 +35,6 @@
       node.querySelector('.picture__comments').textContent = data.comments.length;
 
       fragment.appendChild(node);
-      callback();
     }
 
     function successHandler(data) {
@@ -46,6 +45,7 @@
       }
 
       containerPictures.appendChild(fragment);
+      callback();
     }
 
     function errorHandler(errorMessage) {

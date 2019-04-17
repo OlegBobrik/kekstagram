@@ -5,15 +5,11 @@
   var MAX_SCALE = 100;
   var STEP_SCALE = 25;
 
-  // var hashTag = '';
-
   var imgUpload = document.querySelector('.img-upload');
   var uploadFile = imgUpload.querySelector('.img-upload__start #upload-file');
   var imgOverlay = imgUpload.querySelector('.img-upload__overlay');
   var imgOverlayText = imgUpload.querySelector('.img-upload__text');
-  // var imgOverlayTextHashtag = imgOverlay.querySelector('.text__hashtags');
   var imgOverlayTextDescription = imgOverlay.querySelector('.text__description');
-  // var form = document.querySelector('.img-upload__form');
   var imgOverlayClose = imgUpload.querySelector('.img-upload__cancel');
   var effectLevel = imgOverlay.querySelector('.effect-level');
   var effectLevelValue = effectLevel.querySelector('.effect-level__value');
@@ -229,26 +225,6 @@
     setScalePicture(value);
   }
 
-  // var hashTagsArray = [];
-  // var validate = true;
-
-  // function setCustomValidity(hashtag) {
-
-  //   if (hashtag.charAt(0) === '#' &&
-  //     hashtag.length > 1 &&
-  //     hashtag.length < 20) {
-  //     hashTagsArray.push(hashtag.toLowerCase());
-  //     validate = true;
-  //     // console.log(hashtag);
-  //   } else {
-  //     validate = false;
-  //   }
-
-  //   console.log('hashtag: ' + hashTagsArray);
-
-  //   return validate;
-  // }
-
   // Listeners
   uploadFile.addEventListener('change', function (evt) {
     openImgOverlay();
@@ -257,23 +233,6 @@
       closeImgOverlay();
     }
   });
-
-  // imgOverlayTextHashtag.addEventListener('input', function (evt) {
-
-  //   if (evt.data !== ' ') {
-  //     hashTag += evt.data;
-  //   } else {
-
-  //     setCustomValidity(hashTag);
-  //     hashTag = '';
-  //   }
-
-  //   if (evt.data === null) {
-  //     hashTag = '';
-  //   }
-
-  //   console.log(hashTag);
-  // });
 
   imgOverlayClose.addEventListener('click', closeImgOverlay);
 
@@ -285,9 +244,4 @@
 
   buttonScaleBigger.addEventListener('click', buttonScaleBiggerClickHandler);
 
-  // form.addEventListener('submit', function (evt) {
-  //   if (!validate) {
-  //     evt.preventDefault();
-  //   }
-  // });
 })();

@@ -3,25 +3,26 @@
 (function () {
   var containerPictures = document.querySelector('.pictures');
 
-  function openPreview(evt) {
-    var target = evt.target;
-    var pictureImg = containerPictures.querySelector('.picture__img');
+  function addListenerOpenPreviewPopup() {
 
-    while (target !== containerPictures) {
+    function openPreviewPopup(evt) {
+      var target = evt.target;
+      var pictureImg = containerPictures.querySelector('.picture__img');
 
-      if (target.className === pictureImg.classList.value) {
-        window.preview.render(target.parentNode);
+      while (target !== containerPictures) {
+
+        if (target.className === pictureImg.classList.value) {
+          window.preview.render(target.parentNode);
+        }
+
+        target = target.parentNode;
       }
-
-      target = target.parentNode;
     }
+
+    // Listeners
+    containerPictures.addEventListener('click', openPreviewPopup);
   }
 
-  // Listeners
-  function AddListener() {
-    containerPictures.addEventListener('click', openPreview);
-  }
-
-  window.pictures(AddListener);
+  window.pictures(addListenerOpenPreviewPopup);
 
 })();
