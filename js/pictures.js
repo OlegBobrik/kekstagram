@@ -6,36 +6,37 @@
   var template = document.querySelector('#picture').content;
   var containerPictures = document.querySelector('.pictures');
 
-  window.pictures = function (callback) {
-    /**
-     * A Photo-object
-     *
-     * @param {Number} id - ID object
-     * @param {Object} data
-     */
-    function Photo(id, data) {
-      this.url = data.url;
-      this.likes = data.likes;
-      this.comments = data.comments;
-      this.description = data.description;
-      this.id = id;
-    }
+  /**
+   * A Photo-object
+   *
+   * @param {Number} id - ID object
+   * @param {Object} data
+   */
+  function Photo(id, data) {
+    this.url = data.url;
+    this.likes = data.likes;
+    this.comments = data.comments;
+    this.description = data.description;
+    this.id = id;
+  }
 
-    /**
-     * Generating and adding to the DOM one picture
-     *
-     * @param {Object} data
-     */
-    function createSmallPicture(data) {
-      var node = template.cloneNode(true);
+  /**
+   * Generating and adding to the DOM one picture
+   *
+   * @param {Object} data
+   */
+  function createSmallPicture(data) {
+    var node = template.cloneNode(true);
 
-      node.querySelector('.picture').setAttribute('id', data.id);
-      node.querySelector('.picture__img').setAttribute('src', data.url);
-      node.querySelector('.picture__likes').textContent = data.likes;
-      node.querySelector('.picture__comments').textContent = data.comments.length;
+    node.querySelector('.picture').setAttribute('id', data.id);
+    node.querySelector('.picture__img').setAttribute('src', data.url);
+    node.querySelector('.picture__likes').textContent = data.likes;
+    node.querySelector('.picture__comments').textContent = data.comments.length;
 
-      fragment.appendChild(node);
-    }
+    fragment.appendChild(node);
+  }
+
+  window.pictures = function (successCreateNodesHandler) {
 
     function successHandler(data) {
       for (var i = 0; i < data.length; i++) {
@@ -45,13 +46,13 @@
       }
 
       containerPictures.appendChild(fragment);
-      callback();
+      successCreateNodesHandler();
     }
 
     function errorHandler(errorMessage) {
       var node = document.createElement('div');
 
-      node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+      node.style = 'z-index: 1000; margin: 0 auto; text-align: center; background-color: red;';
       node.style.position = 'absolute';
       node.style.left = 0;
       node.style.right = 0;
@@ -65,9 +66,13 @@
     window.pictures = {
       photosArray: function () {
         return photos;
+      },
+
+      sendError: function () {
+        return errorHandler();
       }
     };
 
-    window.backend(successHandler, errorHandler);
+    window.backend.loadData(successHandler, errorHandler);
   };
 })();

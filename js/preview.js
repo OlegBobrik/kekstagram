@@ -12,7 +12,6 @@
   var nodeComment = bigPicture.querySelector('.social__comment').cloneNode(true);
   var cancelBigPicture = bigPicture.querySelector('.big-picture__cancel');
   var inputSocialFooter = bigPicture.querySelector('.social__footer-text');
-  var form = document.querySelector('.img-upload__form');
 
   /**
    * A popup's selected picture
@@ -132,13 +131,6 @@
   cancelBigPicture.addEventListener('click', closePreviewPopup);
 
   buttonCommentsLoader.addEventListener('click', buttonCommentsLoaderHandler);
-
-  form.addEventListener('submit', function (evt) {
-    if (!window.hashtags.validate()) {
-      evt.preventDefault();
-    }
-  });
-
 
   // Window
   window.preview = {

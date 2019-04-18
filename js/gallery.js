@@ -20,9 +20,8 @@
     }
 
     // Listeners
-    containerPictures.addEventListener('click', openPreviewPopup);
+    containerPictures.addEventListener('click', openPreviewPopup, true);
   }
 
   window.pictures(addListenerOpenPreviewPopup);
-
 })();

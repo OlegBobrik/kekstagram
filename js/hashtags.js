@@ -2,8 +2,7 @@
 
 (function () {
   var inputHashtags = document.querySelector('.img-upload__text .text__hashtags');
-  var form = document.querySelector('.img-upload__form');
-  var submitButton = form.querySelector('.img-upload__submit');
+  var submitButton = document.querySelector('.img-upload__form .img-upload__submit');
   var invalidHashTagMessages = [];
   var valid = true;
 
@@ -16,6 +15,7 @@
     maxLengthHashTag: 'Максимальная длина одного хэш-тега 20 символов, включая решётку.'
   };
 
+  // Error flags
   // eslint-disable-next-line no-undef
   var errorMessageFlags = new Map([
     ['withoutHashTag', false],
@@ -33,6 +33,10 @@
     });
   }
 
+  /**
+   * String to array without spaces
+   * @param {String} string
+   */
   function stringToArray(string) {
     var hashTagsArray = [];
     var hashTag = '';
@@ -61,6 +65,10 @@
     hashTagsArray = [];
   }
 
+  /**
+   * Checking the hashtag for valid input
+   * @param {Array} array
+   */
   function checkHashTags(array) {
     var duplicates = {};
     var hashTagCounter = 0;
@@ -107,6 +115,7 @@
     setCustomValidity();
   }
 
+  // Check the error flags and put the error messages in the array
   function setCustomValidity() {
     invalidHashTagMessages = [];
 
@@ -135,7 +144,7 @@
     }
 
     if (invalidHashTagMessages.length !== 0) {
-      createMessageList(invalidHashTagMessages);
+      createErrorMessageList(invalidHashTagMessages);
       valid = false;
     } else {
       valid = true;
@@ -145,7 +154,6 @@
   }
 
   inputHashtags.addEventListener('input', function () {
-
     stringToArray(inputHashtags.value);
 
     if (!valid) {
@@ -156,19 +164,16 @@
     }
   });
 
-  function createMessageList(messages) {
+  function createErrorMessageList(messages) {
     var wrapper = document.querySelector('.img-upload__overlay .img-upload__wrapper');
 
     var node = document.createElement('div');
     var list = document.createElement('ul');
 
     node.classList.add('img-upload__messages');
-    node.style.marginTop = '10px';
-    node.style.textTransform = 'none';
 
-    list.style.listStyleType = 'none';
-    list.style.margin = '0';
-    list.style.padding = '0';
+    node.style = 'margin-top: 10px; text-transform: none';
+    list.style = 'list-style: none; margin: 0; padding: 0';
 
     wrapper.appendChild(node);
     node.append(list);
