@@ -46,7 +46,7 @@
 
       if (string.charAt(i) !== space) {
 
-        for (var j = i; j < string.length; j++, i++) {
+        for (var j = i; j < string.length; j++, i += 2) {
 
           if (string.charAt(j) !== space) {
             hashTag += string.charAt(j);

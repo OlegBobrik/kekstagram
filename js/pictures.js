@@ -4,7 +4,7 @@
   var photos = [];
   var fragment = document.createDocumentFragment();
   var template = document.querySelector('#picture').content;
-  var containerPictures = document.querySelector('.pictures');
+  var picturesElement = document.querySelector('.pictures');
 
   /**
    * A Photo-object
@@ -45,7 +45,7 @@
         createSmallPicture(photos[i]);
       }
 
-      containerPictures.appendChild(fragment);
+      picturesElement.appendChild(fragment);
       successCreateNodesHandler();
     }
 

@@ -1,27 +1,25 @@
 'use strict';
 
 (function () {
-  var containerPictures = document.querySelector('.pictures');
+  var picturesElement = document.querySelector('.pictures');
+  var filter = document.querySelector('.img-filters');
 
-  function addListenerOpenPreviewPopup() {
+  function addListenerPictures() {
+    filter.classList.remove('img-filters--inactive');
 
-    function openPreviewPopup(evt) {
+    function picturesElementClickHandler(evt) {
       var target = evt.target;
-      var pictureImg = containerPictures.querySelector('.picture__img');
+      var pictureImg = picturesElement.querySelector('.picture__img');
 
-      while (target !== containerPictures) {
-
-        if (target.className === pictureImg.classList.value) {
-          window.preview.render(target.parentNode);
-        }
-
-        target = target.parentNode;
+      if (target.tagName === 'IMG' &&
+          target.className === pictureImg.classList.value) {
+        window.preview.render(target.parentNode);
       }
     }
 
     // Listeners
-    containerPictures.addEventListener('click', openPreviewPopup, true);
+    picturesElement.addEventListener('click', picturesElementClickHandler, true);
   }
 
-  window.pictures(addListenerOpenPreviewPopup);
+  window.pictures(addListenerPictures);
 })();
