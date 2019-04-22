@@ -28,7 +28,7 @@
   function createSmallPicture(data) {
     var node = template.cloneNode(true);
 
-    node.querySelector('.picture').setAttribute('id', data.id);
+    node.querySelector('.picture').setAttribute('data-id', data.id);
     node.querySelector('.picture__img').setAttribute('src', data.url);
     node.querySelector('.picture__likes').textContent = data.likes;
     node.querySelector('.picture__comments').textContent = data.comments.length;
@@ -66,10 +66,6 @@
     window.pictures = {
       photosArray: function () {
         return photos;
-      },
-
-      sendError: function () {
-        return errorHandler();
       }
     };
 

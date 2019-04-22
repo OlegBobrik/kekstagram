@@ -26,19 +26,25 @@
   var effectContainerElement = formOverlay.querySelector('.effects__list');
   var effectRadioInputs = effectContainerElement.querySelectorAll('input[type="radio"]');
 
-  var coordsLevelLine;
-  var widthEffectLevelLine;
+  var selectedRadioInput;
 
-  function setFilter() {
-    var filterClassNames = {
-      'none': 'effect__preview--none',
-      'chrome': 'effects__preview--chrome',
-      'sepia': 'effects__preview--sepia',
-      'marvin': 'effects__preview--marvin',
-      'phobos': 'effects__preview--phobos',
-      'heat': 'effects__preview--heat'
-    };
+  var filterClassNames = {
+    'none': 'effect__preview--none',
+    'chrome': 'effects__preview--chrome',
+    'sepia': 'effects__preview--sepia',
+    'marvin': 'effects__preview--marvin',
+    'phobos': 'effects__preview--phobos',
+    'heat': 'effects__preview--heat'
+  };
 
+  /**
+   * Get the filter name based on the checkbox value
+   * and also set the value of filter
+   *
+   * @param {String} filter
+   * @return {String} filterNames
+   */
+  function setFilter(filter) {
     var filterNames = {
       'none': 'none',
       'chrome': 'grayscale( +' + getProportion(1) + ')',
@@ -60,36 +66,30 @@
       return value;
     }
 
-    return {
-      className: function (filterName) {
-        return filterClassNames[filterName];
-      },
-      filter: function (filterName) {
-        return filterNames[filterName];
-      }
-    };
+    return filterNames[filter];
   }
 
   // Change filter
   function changeFilter() {
     for (var i = 0; i < effectRadioInputs.length; i++) {
-      var value = effectRadioInputs[i].value;
-      var checked = effectRadioInputs[i].checked;
 
-      if (checked) {
-        picturePreview.classList.add(setFilter().className(value));
-        picturePreview.style.filter = setFilter().filter(value);
-
-        if (value === 'none') {
-          effectLevel.classList.add('hidden');
-        } else if (value !== 'none') {
-          effectLevel.classList.remove('hidden');
-        }
-
-      } else if (!checked) {
-        picturePreview.classList.remove(setFilter().className(value));
+      if (effectRadioInputs[i].checked) {
+        selectedRadioInput = effectRadioInputs[i];
+        break;
       }
     }
+
+    if (selectedRadioInput.value === 'none') {
+      effectLevel.classList.add('hidden');
+
+    } else if (selectedRadioInput.value !== 'none') {
+      effectLevel.classList.remove('hidden');
+    }
+
+    picturePreview.className = '';
+    picturePreview.classList.add(filterClassNames[selectedRadioInput.value]);
+    picturePreview.style.filter = setFilter(selectedRadioInput.value);
+
   }
 
   // ESC keydown
@@ -107,8 +107,6 @@
   // Open form
   function openForm() {
     formOverlay.classList.remove('hidden');
-    coordsLevelLine = window.utils.getCoords(effectLevelLine);
-    widthEffectLevelLine = effectLevelLine.offsetWidth;
     effectLevel.style.cursor = 'pointer';
     formTextarea.setAttribute('maxlength', '140');
     formInputHashtags.focus();
@@ -157,6 +155,8 @@
 
   // Moving the pin on the slider
   function effectLevelPinMouseDownHandler() {
+    var coordsLevelLine = window.utils.getCoords(effectLevelLine);
+    var widthEffectLevelLine = effectLevelLine.offsetWidth;
 
     function movePin(evt) {
       var x = evt.pageX - coordsLevelLine;
@@ -193,6 +193,8 @@
 
   // Change value filter on click
   function effectLevelLineClickHandler(evt) {
+    var coordsLevelLine = window.utils.getCoords(effectLevelLine);
+    var widthEffectLevelLine = effectLevelLine.offsetWidth;
     var position = evt.pageX - coordsLevelLine;
     var value = Math.floor(position / (widthEffectLevelLine / 100));
 
@@ -226,8 +228,11 @@
   // Send data from FORM to server
   function formSubmitHandler() {
 
-    // Failed upload data
-    function errorSendDataHandler() {
+    showTransferMessage();
+
+    // Failed transfer data
+    function transferFailedHandler() {
+
       var template = document.querySelector('#error').content;
       var node = template.cloneNode(true);
       var wrapper = document.querySelector('.img-upload__overlay .img-upload__wrapper');
@@ -241,6 +246,7 @@
           error.parentNode.removeChild(error);
         }
 
+        closeTransferMessage();
         formSubmitHandler();
       });
 
@@ -250,12 +256,14 @@
         if (error) {
           error.parentNode.removeChild(error);
         }
+
+        closeTransferMessage();
         document.querySelector('#upload-file').click();
       });
     }
 
-    // Success upload data
-    function successSendDataHandler() {
+    // Success transfer data
+    function transferCompleteHandler() {
       var template = document.querySelector('#success').content;
       var node = template.cloneNode(true);
       var wrapper = document.querySelector('.img-upload__overlay .img-upload__wrapper');
@@ -269,11 +277,29 @@
           success.parentNode.removeChild(success);
         }
 
+        closeTransferMessage();
         closeForm();
       });
     }
 
-    window.backend.uploadData(new FormData(formElement), successSendDataHandler, errorSendDataHandler);
+    window.backend.uploadData(new FormData(formElement), transferCompleteHandler, transferFailedHandler);
+  }
+
+  // Show transfer message
+  function showTransferMessage() {
+    var templateMessage = document.querySelector('#messages').content;
+    var node = templateMessage.cloneNode(true);
+    var preview = document.querySelector('.img-upload__preview');
+
+    preview.appendChild(node);
+  }
+
+  // Close transfer message
+  function closeTransferMessage() {
+    var messages = document.querySelector('.img-upload__message');
+    var preview = document.querySelector('.img-upload__preview');
+
+    preview.removeChild(messages);
   }
 
   function formButtonCloseClickHandler() {

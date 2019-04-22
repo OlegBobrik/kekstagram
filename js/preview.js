@@ -19,7 +19,7 @@
    * @param {Object} data
    */
   function renderPreview(data) {
-    var id = data.getAttribute('id');
+    var id = data.getAttribute('data-id');
 
     currentData = window.pictures.photosArray()[id];
 
@@ -80,7 +80,7 @@
     fragment.appendChild(node);
   }
 
-  //  Remove all comments in the popup's preview
+  //  Remove all comments in the preview
   function removeAllCommentsPreview() {
     var socialComments = previewPictureElement.querySelector('.social__comments');
     var length = socialComments.children.length;
@@ -115,7 +115,6 @@
     }
   }
 
-  // Click
   function previewPictureElementClickHandler(evt) {
     if (evt.target === previewPictureElement) {
       closePreviewPopup();

@@ -6,57 +6,54 @@
 
   window.backend = {
 
-    loadData: function (onLoad, onError) {
+    loadData: function (successHandler, errorHandler) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
         switch (xhr.status) {
           case 200:
-            onLoad(xhr.response);
+            successHandler(xhr.response);
             break;
           case 206:
-            onError('Статус ответа: ' + xhr.status + ' - Partial Content');
+            errorHandler('Статус ответа: ' + xhr.status + ' - Partial Content');
             break;
           case 301:
-            onError('Статус ответа: ' + xhr.status + ' - Moved Permanently');
-            break;
-          case 302:
-            onError('Статус ответа: ' + xhr.status + ' - Moved Temporarily');
+            errorHandler('Статус ответа: ' + xhr.status + ' - Moved Permanently');
             break;
           case 403:
-            onError('Статус ответа: ' + xhr.status + ' - Forbidden');
+            errorHandler('Статус ответа: ' + xhr.status + ' - Forbidden');
             break;
           case 404:
-            onError('Статус ответа: ' + xhr.status + ' - Not Found');
+            errorHandler('Статус ответа: ' + xhr.status + ' - Not Found');
             break;
           default:
-            onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+            errorHandler('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
         }
       });
 
       xhr.addEventListener('error', function () {
         switch (xhr.status) {
           case 500:
-            onError('Статус ответа: ' + xhr.status + ' - Internal Server Error');
+            errorHandler('Статус ответа: ' + xhr.status + ' - Internal Server Error');
             break;
           case 501:
-            onError('Статус ответа: ' + xhr.status + ' - Not Implemented');
+            errorHandler('Статус ответа: ' + xhr.status + ' - Not Implemented');
             break;
           case 502:
-            onError('Статус ответа: ' + xhr.status + ' - Bad Gateway');
+            errorHandler('Статус ответа: ' + xhr.status + ' - Bad Gateway');
             break;
           case 503:
-            onError('Статус ответа: ' + xhr.status + ' - Service Unavailable');
+            errorHandler('Статус ответа: ' + xhr.status + ' - Service Unavailable');
             break;
           default:
-            onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+            errorHandler('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
         }
-        onError('Произошла ошибка соединения. Статус ответа: + ' + xhr.status);
+        errorHandler('Произошла ошибка соединения. Статус ответа: + ' + xhr.status);
       });
 
       xhr.addEventListener('timeout', function () {
-        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+        errorHandler('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
 
       xhr.timeout = 5000; // 5s
@@ -65,22 +62,22 @@
       xhr.send();
     },
 
-    uploadData: function (data, onLoad, onError) {
+    uploadData: function (data, transferCompleteHandler, transferFailedHandler) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
         switch (xhr.status) {
           case 200:
-            onLoad(xhr.response);
+            transferCompleteHandler(xhr.response);
             break;
           default:
-            onError();
+            transferFailedHandler();
         }
       });
 
       xhr.addEventListener('error', function () {
-        onError('Ошибка' + xhr.status);
+        transferFailedHandler('Ошибка' + xhr.status);
       });
 
       xhr.timeout = 5000; // 5s

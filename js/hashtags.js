@@ -1,168 +1,118 @@
 'use strict';
 
 (function () {
+  var MAX_COUNT_HASHTAG = 5;
+  var MIN_LENGHT_HASHTAG = 2;
+  var MAX_LENGHT_HASHTAG = 20;
+
   var inputHashtags = document.querySelector('.img-upload__text .text__hashtags');
   var submitButton = document.querySelector('.img-upload__form .img-upload__submit');
-  var invalidHashTagMessages = [];
   var valid = true;
 
-  var errorMessageText = {
-    withoutHashTag: 'У хэш-тега вначале должен быть символ решётки (#).',
-    minLengthHashTag: 'Хэш-тег не может состоять только из одной решётки.',
-    noSpace: 'Хэш-теги разделяются пробелами.',
-    duplicate: 'Один и тот же хэш-тег не может быть использован дважды.',
-    maxCountHashTags: 'Нельзя указывать больше пяти хэш-тегов.',
-    maxLengthHashTag: 'Максимальная длина одного хэш-тега 20 символов, включая решётку.'
+  var ErrorMessageText = {
+    WITHOUT_HASHTAG: 'У хэш-тега вначале должен быть символ решётки (#).',
+    MIN_LENGTH: 'Хэш-тег не может состоять только из одной решётки.',
+    NO_SPACE: 'Хэш-теги разделяются пробелами.',
+    DUPLICATE: 'Один и тот же хэш-тег не может быть использован дважды.',
+    MAX_COUNT_HASHTAGS: 'Нельзя указывать больше пяти хэш-тегов.',
+    MAX_LENGTH: 'Максимальная длина одного хэш-тега 20 символов, включая решётку.'
   };
-
-  // Error flags
-  // eslint-disable-next-line no-undef
-  var errorMessageFlags = new Map([
-    ['withoutHashTag', false],
-    ['minLengthHashTag', false],
-    ['noSpace', false],
-    ['duplicate', false],
-    ['maxCountHashTags', false],
-    ['maxLengthHashTag', false]
-  ]);
-
-  function resetErrorMessageFlags() {
-    errorMessageFlags.forEach(function (value, key) {
-      value = false;
-      errorMessageFlags.set(key, value);
-    });
-  }
 
   /**
    * String to array without spaces
    * @param {String} string
    */
   function stringToArray(string) {
-    var hashTagsArray = [];
-    var hashTag = '';
+    var hashtagsArray = [];
+    var hashtag = '';
     var space = ' ';
 
     for (var i = 0; i < string.length; i++) {
 
       if (string.charAt(i) !== space) {
 
-        for (var j = i; j < string.length; j++, i += 2) {
+        for (var j = i; j < string.length; j++, i++) {
 
           if (string.charAt(j) !== space) {
-            hashTag += string.charAt(j);
+            hashtag += string.charAt(j);
           }
 
           if (string.charAt(j) === space || string.length - 1 - j === 0) {
-            hashTagsArray.push(hashTag.toLowerCase());
-            hashTag = '';
+            hashtagsArray.push(hashtag.toLowerCase());
+
+            hashtag = '';
             break;
           }
         }
       }
     }
 
-    checkHashTags(hashTagsArray);
-    hashTagsArray = [];
+    checkHashtags(hashtagsArray);
+    hashtagsArray = [];
   }
 
   /**
    * Checking the hashtag for valid input
    * @param {Array} array
    */
-  function checkHashTags(array) {
+  function checkHashtags(array) {
     var duplicates = {};
-    var hashTagCounter = 0;
+    var hashtagCounter = 0;
+    var invalidHashtagMessages = [];
 
-    if (array.length > 5) {
-      errorMessageFlags.set('maxCountHashTags', true);
+    if (array.length > MAX_COUNT_HASHTAG) {
+      invalidHashtagMessages.push(ErrorMessageText.MAX_COUNT_HASHTAGS);
     }
 
     for (var i = 0; i < array.length; i++) {
 
       if (array[i].charAt(0) !== '#') {
-        errorMessageFlags.set('withoutHashTag', true);
+        invalidHashtagMessages.push(ErrorMessageText.WITHOUT_HASHTAG);
 
       } else if ((array[i].charAt(0) === '#') && (array[i].length >= 2)) {
-        hashTagCounter++;
+        hashtagCounter++;
       }
 
-      if (array[i] === '#') {
-        errorMessageFlags.set('minLengthHashTag', true);
+      if (array[i] === '#' && (array[i].length < MIN_LENGHT_HASHTAG)) {
+        invalidHashtagMessages.push(ErrorMessageText.MIN_LENGTH);
       }
 
-      if (array[i].length > 20) {
-        errorMessageFlags.set('maxLengthHashTag', true);
+      if (array[i].length > MAX_LENGHT_HASHTAG) {
+        invalidHashtagMessages.push(ErrorMessageText.MAX_LENGTH);
       }
 
       for (var j = 1; j < array[i].length; j++) {
 
         if (array[i].charAt(j) === '#') {
-          errorMessageFlags.set('noSpace', true);
+          invalidHashtagMessages.push(ErrorMessageText.NO_SPACE);
         }
-
       }
 
-      if (array[i].charAt(0) === '#') {
+      if (array[i].charAt(0) === '#' && (array[i].length >= 2)) {
         duplicates[array[i]] = array[i];
       }
     }
 
-    if (hashTagCounter > Object.keys(duplicates).length) {
-      errorMessageFlags.set('duplicate', true);
+    if (hashtagCounter > Object.keys(duplicates).length) {
+      invalidHashtagMessages.push(ErrorMessageText.DUPLICATE);
     }
 
     removeMessageList();
-    setCustomValidity();
+    setCustomValidity(invalidHashtagMessages);
   }
 
-  // Check the error flags and put the error messages in the array
-  function setCustomValidity() {
-    invalidHashTagMessages = [];
-
-    if (errorMessageFlags.get('withoutHashTag')) {
-      invalidHashTagMessages.push(errorMessageText.withoutHashTag);
-    }
-
-    if (errorMessageFlags.get('minLengthHashTag')) {
-      invalidHashTagMessages.push(errorMessageText.minLengthHashTag);
-    }
-
-    if (errorMessageFlags.get('noSpace')) {
-      invalidHashTagMessages.push(errorMessageText.noSpace);
-    }
-
-    if (errorMessageFlags.get('duplicate')) {
-      invalidHashTagMessages.push(errorMessageText.duplicate);
-    }
-
-    if (errorMessageFlags.get('maxCountHashTags')) {
-      invalidHashTagMessages.push(errorMessageText.maxCountHashTags);
-    }
-
-    if (errorMessageFlags.get('maxLengthHashTag')) {
-      invalidHashTagMessages.push(errorMessageText.maxLengthHashTag);
-    }
-
-    if (invalidHashTagMessages.length !== 0) {
-      createErrorMessageList(invalidHashTagMessages);
+  /**
+   * Checking length array of messages
+   * @param {Array} messages
+   */
+  function setCustomValidity(messages) {
+    if (messages.length !== 0) {
+      createErrorMessageList(messages);
       valid = false;
     } else {
       valid = true;
     }
-
-    resetErrorMessageFlags();
   }
-
-  inputHashtags.addEventListener('input', function () {
-    stringToArray(inputHashtags.value);
-
-    if (!valid) {
-      submitButton.setAttribute('disabled', 'disabled');
-
-    } else {
-      submitButton.removeAttribute('disabled', 'disabled');
-    }
-  });
 
   function createErrorMessageList(messages) {
     var wrapper = document.querySelector('.img-upload__overlay .img-upload__wrapper');
@@ -193,6 +143,18 @@
       node.parentNode.removeChild(node);
     }
   }
+
+  // Listeners
+  inputHashtags.addEventListener('input', function () {
+    stringToArray(inputHashtags.value);
+
+    if (!valid) {
+      submitButton.setAttribute('disabled', 'disabled');
+
+    } else {
+      submitButton.removeAttribute('disabled', 'disabled');
+    }
+  });
 
   window.hashtags = {
     validate: function () {
