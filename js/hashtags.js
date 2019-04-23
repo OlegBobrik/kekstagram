@@ -1,9 +1,11 @@
 'use strict';
 
 (function () {
-  var MAX_COUNT_HASHTAG = 5;
-  var MIN_LENGHT_HASHTAG = 2;
-  var MAX_LENGHT_HASHTAG = 20;
+  var HashtagRestriction = {
+    MAX_COUNT_HASHTAG: 5,
+    MIN_LENGHT_HASHTAG: 2,
+    MAX_LENGHT_HASHTAG: 20
+  };
 
   var inputHashtags = document.querySelector('.img-upload__text .text__hashtags');
   var submitButton = document.querySelector('.img-upload__form .img-upload__submit');
@@ -23,7 +25,7 @@
    * @param {String} string
    */
   function stringToArray(string) {
-    var hashtagsArray = [];
+    var arrayHashtags = [];
     var hashtag = '';
     var space = ' ';
 
@@ -38,7 +40,7 @@
           }
 
           if (string.charAt(j) === space || string.length - 1 - j === 0) {
-            hashtagsArray.push(hashtag.toLowerCase());
+            arrayHashtags.push(hashtag.toLowerCase());
 
             hashtag = '';
             break;
@@ -47,8 +49,8 @@
       }
     }
 
-    checkHashtags(hashtagsArray);
-    hashtagsArray = [];
+    checkHashtags(arrayHashtags);
+    arrayHashtags = [];
   }
 
   /**
@@ -60,7 +62,7 @@
     var hashtagCounter = 0;
     var invalidHashtagMessages = [];
 
-    if (array.length > MAX_COUNT_HASHTAG) {
+    if (array.length > HashtagRestriction.MAX_COUNT_HASHTAG) {
       invalidHashtagMessages.push(ErrorMessageText.MAX_COUNT_HASHTAGS);
     }
 
@@ -73,11 +75,11 @@
         hashtagCounter++;
       }
 
-      if (array[i] === '#' && (array[i].length < MIN_LENGHT_HASHTAG)) {
+      if (array[i] === '#' && (array[i].length < HashtagRestriction.MIN_LENGHT_HASHTAG)) {
         invalidHashtagMessages.push(ErrorMessageText.MIN_LENGTH);
       }
 
-      if (array[i].length > MAX_LENGHT_HASHTAG) {
+      if (array[i].length > HashtagRestriction.MAX_LENGHT_HASHTAG) {
         invalidHashtagMessages.push(ErrorMessageText.MAX_LENGTH);
       }
 
@@ -85,6 +87,7 @@
 
         if (array[i].charAt(j) === '#') {
           invalidHashtagMessages.push(ErrorMessageText.NO_SPACE);
+          break;
         }
       }
 
@@ -150,7 +153,6 @@
 
     if (!valid) {
       submitButton.setAttribute('disabled', 'disabled');
-
     } else {
       submitButton.removeAttribute('disabled', 'disabled');
     }

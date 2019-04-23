@@ -1,9 +1,11 @@
 'use strict';
 
 (function () {
-  var MIN_SCALE = 25;
-  var MAX_SCALE = 100;
-  var STEP_SCALE = 25;
+  var Scale = {
+    MIN_SCALE: 25,
+    MAX_SCALE: 100,
+    STEP_SCALE: 25
+  };
 
   var formElement = document.querySelector('.img-upload__form');
   var file = formElement.querySelector('.img-upload__start #upload-file');
@@ -28,7 +30,7 @@
 
   var selectedRadioInput;
 
-  var filterClassNames = {
+  var FilterClassName = {
     'none': 'effect__preview--none',
     'chrome': 'effects__preview--chrome',
     'sepia': 'effects__preview--sepia',
@@ -87,7 +89,7 @@
     }
 
     picturePreview.className = '';
-    picturePreview.classList.add(filterClassNames[selectedRadioInput.value]);
+    picturePreview.classList.add(FilterClassName[selectedRadioInput.value]);
     picturePreview.style.filter = setFilter(selectedRadioInput.value);
 
   }
@@ -205,8 +207,8 @@
   function buttonScaleSmallerClickHandler() {
     var value = parseInt(scaleValue.value, 10);
 
-    if (value !== MIN_SCALE) {
-      value -= STEP_SCALE;
+    if (value !== Scale.MIN_SCALE) {
+      value -= Scale.STEP_SCALE;
       scaleValue.value = value + '%';
     }
 
@@ -217,8 +219,8 @@
   function buttonScaleBiggerClickHandler() {
     var value = parseInt(scaleValue.value, 10);
 
-    if (value !== MAX_SCALE) {
-      value += STEP_SCALE;
+    if (value !== Scale.MAX_SCALE) {
+      value += Scale.STEP_SCALE;
       scaleValue.value = value + '%';
     }
 
