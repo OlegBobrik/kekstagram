@@ -21,7 +21,7 @@
   function renderPreview(data) {
     var id = data.getAttribute('data-id');
 
-    currentData = window.pictures.photosArray()[id];
+    currentData = window.pictures.arrayObjects()[id];
 
     previewPictureElement.classList.remove('hidden');
     previewPictureElement.querySelector('.big-picture__img img').setAttribute('src', currentData.url);

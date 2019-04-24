@@ -30,7 +30,7 @@
 
   var selectedRadioInput;
 
-  var FilterClassName = {
+  var valueToClassName = {
     'none': 'effect__preview--none',
     'chrome': 'effects__preview--chrome',
     'sepia': 'effects__preview--sepia',
@@ -89,7 +89,7 @@
     }
 
     picturePreview.className = '';
-    picturePreview.classList.add(FilterClassName[selectedRadioInput.value]);
+    picturePreview.classList.add(valueToClassName[selectedRadioInput.value]);
     picturePreview.style.filter = setFilter(selectedRadioInput.value);
 
   }
@@ -260,7 +260,7 @@
         }
 
         closeTransferMessage();
-        document.querySelector('#upload-file').click();
+        file.click();
       });
     }
 
