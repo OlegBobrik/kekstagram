@@ -40,12 +40,7 @@
     }
 
     // Window
-    window.pictures = {
-      arrayObjects: function () {
-        return photos;
-      }
-    };
-
+    window.pictures = photos;
     window.backend.loadData(successHandler, errorHandler);
   };
 })();

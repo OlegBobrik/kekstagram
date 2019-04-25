@@ -6,12 +6,10 @@
   var picturesElement = document.querySelector('.pictures');
   var formFilter = document.querySelector('.img-filters');
   var formFilterButtons = formFilter.querySelectorAll('button[type="button"]');
-  var buttonFilterPopular = formFilter.querySelector('#filter-popular');
-  var buttonFilterNew = formFilter.querySelector('#filter-new');
-  var buttonFilterDiscussed = formFilter.querySelector('#filter-discussed');
+  var lastTimeout;
 
   /**
-   * Generating and adding to the DOM one picture
+   * Generate and add to the DOM one picture
    *
    * @param {Object} data
    */
@@ -27,8 +25,7 @@
   }
 
   function successCreateObjects() {
-    var objects = window.pictures.arrayObjects();
-    var copyObjects = objects.slice();
+    var objects = window.pictures;
 
     formFilter.classList.remove('img-filters--inactive');
 
@@ -52,7 +49,7 @@
       picturesElement.appendChild(fragment);
     }
 
-    // Click handler
+    // Open preview
     function picturesElementClickHandler(evt) {
       var pictureImg = picturesElement.querySelector('.picture__img');
       var target = evt.target;
@@ -60,32 +57,25 @@
 
       if (target.tagName === tagName &&
           target.className === pictureImg.classList.value) {
-        window.preview.render(target.parentNode);
+        window.preview(target.parentNode);
       }
     }
 
-    // Click handler
-    function buttonFilterPopularClickHandler() {
-      copyObjects.sort(function (a, b) {
-        if (a.likes < b.likes) {
-          return 1;
-        }
-        if (a.likes > b.likes) {
-          return -1;
-        }
-        return 0;
+    // Sort by date
+    function sortArrayByDate() {
+      var copyObjects = objects.slice();
+
+      copyObjects.sort(function () {
+        return window.utils.randomSort();
       });
 
-      renderPictures(copyObjects);
+      renderPictures(copyObjects.slice(0, 10));
     }
 
-    // Click handler
-    function buttonFilterNewClickHandler() {
-      // buttonFilterNew.classList.add('.img-filters__button--active');
-    }
+    // Sort by comments
+    function sortArrayByComments() {
+      var copyObjects = objects.slice();
 
-    // Click handler
-    function buttonFilterDiscussedClickHandler() {
       copyObjects.sort(function (a, b) {
         if (a.comments.length < b.comments.length) {
           return 1;
@@ -99,45 +89,49 @@
       renderPictures(copyObjects);
     }
 
-    // Click handler
+    // Form filter click handler
     function formFilterClickHandler(evt) {
-      var target = evt.target;
-      var tagName = 'BUTTON';
+      var targetId = evt.target.id;
 
-      if (target.tagName === tagName) {
-        formFilterButtons.forEach(function (item) {
-          item.classList.remove('img-filters__button--active');
-        });
-
-        target.classList.add('img-filters__button--active');
+      switch (targetId) {
+        case 'filter-new':
+          sortArrayByDate();
+          break;
+        case 'filter-discussed':
+          sortArrayByComments();
+          break;
+        default:
+          renderPictures(objects);
       }
     }
 
     // Listeners
     picturesElement.addEventListener('click', picturesElementClickHandler);
 
-    buttonFilterPopular.addEventListener('click', function () {
-      if (!buttonFilterPopular.classList.contains('img-filters__button--active')) {
-        buttonFilterPopularClickHandler();
+    formFilter.addEventListener('click', function (evt) {
+      var target = evt.target;
+      var tagName = 'BUTTON';
+      var classActive = 'img-filters__button--active';
+
+      if (!(target.classList.contains(classActive)) &&
+        (target.tagName === tagName)) {
+        formFilterButtons.forEach(function (item) {
+          item.classList.remove(classActive);
+        });
+
+        target.classList.add(classActive);
+
+        if (lastTimeout) {
+          clearTimeout(lastTimeout);
+        }
+
+        lastTimeout = setTimeout(formFilterClickHandler, 500, evt);
       }
     });
-
-    buttonFilterNew.addEventListener('click', function () {
-      if (!buttonFilterNew.classList.contains('img-filters__button--active')) {
-        buttonFilterNewClickHandler();
-      }
-    });
-
-    buttonFilterDiscussed.addEventListener('click', function () {
-      if (!buttonFilterDiscussed.classList.contains('img-filters__button--active')) {
-        buttonFilterDiscussedClickHandler();
-      }
-    });
-
-    formFilter.addEventListener('click', formFilterClickHandler);
 
     renderPictures(objects);
   }
 
+  // Window
   window.pictures(successCreateObjects);
 })();

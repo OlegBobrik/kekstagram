@@ -28,8 +28,6 @@
   var effectContainerElement = formOverlay.querySelector('.effects__list');
   var effectRadioInputs = effectContainerElement.querySelectorAll('input[type="radio"]');
 
-  var selectedRadioInput;
-
   var valueToClassName = {
     'none': 'effect__preview--none',
     'chrome': 'effects__preview--chrome',
@@ -46,7 +44,7 @@
    * @param {String} filter
    * @return {String} filterNames
    */
-  function setFilter(filter) {
+  function setEffect(filter) {
     var filterNames = {
       'none': 'none',
       'chrome': 'grayscale( +' + getProportion(1) + ')',
@@ -71,8 +69,10 @@
     return filterNames[filter];
   }
 
-  // Change filter
-  function changeFilter() {
+  // Change effect
+  function changeEffect() {
+    var selectedRadioInput;
+
     for (var i = 0; i < effectRadioInputs.length; i++) {
 
       if (effectRadioInputs[i].checked) {
@@ -90,7 +90,7 @@
 
     picturePreview.className = '';
     picturePreview.classList.add(valueToClassName[selectedRadioInput.value]);
-    picturePreview.style.filter = setFilter(selectedRadioInput.value);
+    picturePreview.style.filter = setEffect(selectedRadioInput.value);
 
   }
 
@@ -136,7 +136,7 @@
     file.value = '';
 
     effectRadioInputs.forEach(function (item) {
-      item.removeEventListener('click', changeFilter);
+      item.removeEventListener('click', changeEffect);
     });
   }
 
@@ -152,7 +152,7 @@
     effectLevelDepth.style.width = value + '%';
     effectLevelValue.setAttribute('value', value);
 
-    changeFilter();
+    changeEffect();
   }
 
   // Moving the pin on the slider
@@ -185,7 +185,7 @@
   }
 
   /**
-   * Setting scale the picture
+   * Set scale a picture
    * @param {Number} value
    */
   function setScalePicture(value) {
@@ -330,10 +330,6 @@
   buttonScaleBigger.addEventListener('click', buttonScaleBiggerClickHandler);
 
   formElement.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-
-    if (window.hashtags.validate()) {
-      formSubmitHandler();
-    }
+    return window.hashtags ? formSubmitHandler() : evt.preventDefault();
   });
 })();

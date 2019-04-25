@@ -3,7 +3,7 @@
 (function () {
   var SHOW_MAX_COMMENTS = 5;
 
-  var currentData; // Current object
+  var currentObj;
   var counter = 0; // Counter of comments
 
   var fragment = document.createDocumentFragment();
@@ -21,13 +21,13 @@
   function renderPreview(data) {
     var id = data.getAttribute('data-id');
 
-    currentData = window.pictures.arrayObjects()[id];
+    currentObj = window.pictures[id];
 
     previewPictureElement.classList.remove('hidden');
-    previewPictureElement.querySelector('.big-picture__img img').setAttribute('src', currentData.url);
-    previewPictureElement.querySelector('.likes-count').textContent = currentData.likes;
-    previewPictureElement.querySelector('.social__comment-count .comments-count').textContent = currentData.comments.length;
-    previewPictureElement.querySelector('.social__caption').textContent = currentData.description;
+    previewPictureElement.querySelector('.big-picture__img img').setAttribute('src', currentObj.url);
+    previewPictureElement.querySelector('.likes-count').textContent = currentObj.likes;
+    previewPictureElement.querySelector('.social__comment-count .comments-count').textContent = currentObj.comments.length;
+    previewPictureElement.querySelector('.social__caption').textContent = currentObj.description;
 
     document.querySelector('body').classList.add('modal-open');
     document.addEventListener('keydown', previewPictureElementKeydownHandler);
@@ -37,27 +37,27 @@
     addCommentsToPreview();
   }
 
-  // Adding { SHOW_MAX_COMMENTS } or less comments to the preview popup
+  // Adding { SHOW_MAX_COMMENTS } or less comments to the preview a picture
   function addCommentsToPreview() {
-    var commentsCount = currentData.comments.length;
+    var commentsCount = currentObj.comments.length;
     var t = counter;
 
     if (commentsCount - t > SHOW_MAX_COMMENTS) {
 
       for (var i = t; i < SHOW_MAX_COMMENTS + t; i++) {
-        addCommentToFragment(currentData, i);
+        addCommentToFragment(currentObj, i);
       }
     } else {
 
       for (var j = counter; j < commentsCount; j++) {
-        addCommentToFragment(currentData, j);
+        addCommentToFragment(currentObj, j);
       }
     }
 
     previewPictureElement.querySelector('.social__comments').appendChild(fragment);
     previewPictureElement.querySelector('.social__comment-count').childNodes[0].textContent = counter + ' из ';
 
-    if (counter === currentData.comments.length) {
+    if (counter === currentObj.comments.length) {
       buttonCommentsLoader.classList.add('hidden');
       counter = 0;
 
@@ -66,7 +66,7 @@
     }
   }
 
-  // Adding one comment to fragment
+  // Add one comment to fragment
   function addCommentToFragment(obj, index) {
     var node = nodeCommentElement.cloneNode(true);
     var avatar = obj.comments[index].avatar;
@@ -80,7 +80,7 @@
     fragment.appendChild(node);
   }
 
-  //  Remove all comments in the preview
+  // Remove all comments in the preview
   function removeAllCommentsPreview() {
     var socialComments = previewPictureElement.querySelector('.social__comments');
     var length = socialComments.children.length;
@@ -115,8 +115,9 @@
     }
   }
 
+  // Close preview on click the overlay
   function previewPictureElementClickHandler(evt) {
-    if (evt.target === previewPictureElement) {
+    if (evt.target.classList.contains('overlay')) {
       closePreviewPopup();
     }
   }
@@ -128,13 +129,8 @@
 
   // Listeners
   cancelPreview.addEventListener('click', closePreviewPopup);
-
   buttonCommentsLoader.addEventListener('click', buttonCommentsLoaderClickHandler);
 
   // Window
-  window.preview = {
-    render: function (data) {
-      renderPreview(data);
-    }
-  };
+  window.preview = renderPreview;
 })();

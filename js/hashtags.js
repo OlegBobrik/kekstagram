@@ -54,7 +54,7 @@
   }
 
   /**
-   * Checking the hashtag for valid input
+   * Check hashtag input correct
    * @param {Array} array
    */
   function checkHashtags(array) {
@@ -158,9 +158,6 @@
     }
   });
 
-  window.hashtags = {
-    validate: function () {
-      return valid;
-    }
-  };
+  // Window
+  window.hashtags = valid;
 })();
