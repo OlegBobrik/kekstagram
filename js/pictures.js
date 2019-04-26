@@ -29,11 +29,13 @@
     function errorHandler(errorMessage) {
       var node = document.createElement('div');
 
-      node.style = 'z-index: 1000; margin: 0 auto; text-align: center; background-color: red;';
+      node.style = 'z-index: 1000; margin: 23px auto; text-align: center; background-color: rgb(255, 78, 78);';
       node.style.position = 'absolute';
       node.style.left = 0;
       node.style.right = 0;
-      node.style.fontSize = '30px';
+      node.style.width = '30%';
+      node.style.borderRadius = '3px';
+      node.style.fontSize = '12px';
 
       node.textContent = errorMessage;
       document.body.insertAdjacentElement('afterbegin', node);

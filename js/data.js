@@ -20,25 +20,18 @@
   ];
 
   function generateComments() {
-    // получаем случайное число строк (предложений) для одного комментария
     var countSentence = window.utils.getRandomNumber(1, 2);
-
-    // создаем пустой массив для хранения комментариев
     var comments = [];
 
-    // задаем случайную длину массива для хранения комментариев
     comments.length = window.utils.getRandomNumber(1, 10);
 
     for (var i = 0; i < comments.length; i++) {
-    // переменная для хранения составного комментария
       var comment = '';
 
       for (var j = 0; j < countSentence; j++) {
-        // производим конкатенацию строк (предложениий) из массива commentsUsers для одного комментария
         comment += commentsUsers[window.utils.getRandomNumber(0, commentsUsers.length - 1)] + ' ';
       }
 
-      // добавляем (составной) комментарий в i-ый элемент массива
       comments[i] = comment;
     }
 
